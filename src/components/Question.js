@@ -1,9 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function Question({ question, onAnswered }) {
   const [timeRemaining, setTimeRemaining] = useState(10);
 
   // add useEffect code
+  useEffect(()=>{
+    const timerID = setTimeout(()=> { 
+      console.log("Delayed for 1 second.");
+      setTimeRemaining(timeRemaining - 1);
+    }, "1000");
+
+    if (timeRemaining === 0){ // resets timeRemaining back to 10 seconds, so our next question will have a fresh timer;
+      setTimeRemaining(timeRemaining + 10);
+      onAnswered(false);
+    }
+
+    // returning a cleanup function
+    return function cleanup() {				// WIll clean up after the unmounted component
+      clearTimeout(timerID);
+    };
+  }, [timeRemaining]);
+  
 
   function handleAnswer(isCorrect) {
     setTimeRemaining(10);
